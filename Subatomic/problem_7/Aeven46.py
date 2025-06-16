@@ -1,0 +1,93 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+A = 46                      #mass number
+
+amu_MeV = 931.5             #1 amu = 931.5 MeV
+
+#parameters converted from MeV to amu
+a_v = 15.753/amu_MeV        #15.753 MeV * uma / 931.5 MeV    
+a_s = 17.804/amu_MeV
+a_c = 0.7103/amu_MeV
+a_sym = 23.69/amu_MeV
+a_p = 33.6/amu_MeV
+
+
+mp = 938.27/amu_MeV   #proton's mass converted from MeV to amu
+mn = 939.56/amu_MeV   #neutron's mass converted from MeV to amu
+
+
+def pairing(A, Z):                      #pairing term for the formula
+    N = A - Z                           
+    if A % 2 == 1:                      #if A is odd, delta=0
+        return 0                        
+    elif Z % 2 == 0 and N % 2 == 0:     #A even: even-even
+        return +a_p / A**(3/4)      
+    elif Z % 2 == 1 and N % 2 == 1:     #A even: odd-odd
+        return -a_p / A**(3/4)
+    
+
+def mass_excess(Z, A, parity):                              
+    alpha=mn-a_v+a_s/(A**(1/3))+a_sym               
+    beta = (mn-mp)+4*a_sym+a_c/(A**(1/3))
+    gamma=4*a_sym/(A)+a_c/(A**(1/3))
+
+    if parity == 'even-even':
+        delta = +a_p / A**(3/4)
+    elif parity == 'odd-odd':
+        delta = -a_p / A**(3/4)
+    else:
+        delta = 0
+
+    M = alpha*A-beta*Z+gamma*(Z**2)-delta           #mass formula
+    return M-A                                      #mass excess (in amu)
+
+
+Z_vals = np.linspace(16, 26, 400)       #some values to put into the formula
+mass_vals_even = [mass_excess(Z, A, 'even-even') for Z in Z_vals] #even-even
+mass_vals_odd = [mass_excess(Z, A, 'odd-odd') for Z in Z_vals]    #odd-odd
+
+#experimental data collected from https://www-nds.iaea.org/ and converted from keV to amu
+Z_exp = np.array([18, 19, 20, 21, 22, 23, 24])
+mass_exp_amu = np.array([-29.77, -35.41, -43.13, -41.76, -44.12, -37.07, -29.47]) / amu_MeV
+
+
+plt.figure(figsize=(8, 5))
+plt.plot(Z_vals, mass_vals_even, label='even-even', linestyle='-', color='darkorange')
+plt.plot(Z_vals, mass_vals_odd, label='odd-odd', linestyle='-', color='palevioletred')
+plt.plot(Z_exp, mass_exp_amu,'ko', zorder=5, label='exp data')
+
+
+for i in range(len(Z_exp) - 1):                 #to plot the transitions
+    z0, z1 = Z_exp[i], Z_exp[i+1]
+    y0, y1 = mass_exp_amu[i], mass_exp_amu[i+1]
+    if abs(z1 - z0) == 1:
+        if y1 < y0:
+            #Bminus
+            plt.annotate('', xy=(z1, y1), xytext=(z0, y0),
+                         arrowprops=dict(arrowstyle="->", color='black'))
+        elif y0 < y1:
+            #Bplus
+            plt.annotate('', xy=(z0, y0), xytext=(z1, y1),
+                         arrowprops=dict(arrowstyle="->", color='black'))
+
+beta_transitions = {
+    18: 'β⁻', 19: 'β⁻', 20: 'β⁻',
+    21: 'β⁻', 23: 'β⁺', 24: 'β⁺'
+}
+for z, label in beta_transitions.items():
+    idx = np.where(Z_exp == z)[0]
+    if len(idx) > 0:
+        y = mass_exp_amu[idx[0]]
+        plt.text(z, y + 0.0005, label, fontsize=12, color='red', ha='center')
+
+plt.xticks(np.arange(16, 26, 1)) 
+plt.xlabel("Z")
+plt.ylabel("Mass excess [amu]")
+plt.title("A = 46")
+plt.grid(True)
+plt.legend()
+plt.tight_layout()
+plt.savefig('A46.png')
+plt.show()
