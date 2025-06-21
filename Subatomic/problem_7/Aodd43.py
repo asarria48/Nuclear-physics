@@ -64,7 +64,7 @@ for i in range(len(Z_exp) - 1):                 # to plot the transitions
 
 transitions = {                             # these are indicated in the IAEA database
     17: 'β⁻', 18: 'β⁻', 19: 'β⁻',           
-    20: 'β⁺', 21: 'ec', 22: 'ec', 23: 'ec'
+    21: 'ec', 22: 'ec', 23: 'ec'
 }
 for z, label in transitions.items():
     idx = np.where(Z_exp == z)[0]
