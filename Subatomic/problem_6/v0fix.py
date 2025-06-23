@@ -23,7 +23,7 @@ def angulardist(q, V0, alpha):
 
 
 # Now, I keep  v0 fixed and vary the values of alpha
-V0_fixed = 10                               # [MeV·fm]
+V0_fixed = 26                               # [MeV·fm]
 alpha_vals = [0.3, 0.5, 0.7, 1.2, 1.8]      # [fm^-1] 
 
 
