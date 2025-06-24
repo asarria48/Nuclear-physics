@@ -7,7 +7,7 @@ mu = (m1*m2)/(m1+m2)    # masa reducida en MeV/c^2
 hbarc = 197.3           # [MeV·fm]
 
 # different values for V0 [MeV] (depth) and alpha [fm^-1]
-param_sets = [(50, 0.5),(70, 0.7),(90, 0.9)]
+param_sets = [(70, 0.5),(100, 0.7),(150, 0.9)]
 
 r = np.linspace(0.1, 3, 500)
 
