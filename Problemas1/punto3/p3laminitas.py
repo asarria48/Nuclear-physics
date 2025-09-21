@@ -2,15 +2,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.interpolate import interp1d
 
-rho = 19.32  # Density [g/cm^3]
+rho = 10.49  # Density [g/cm^3]
 
 
-E = 0.39                    # Energy found in the previous plot [MeV]
-element = 'Au'           
-color = 'darkorange'          
+E = 0.75                    # Energy found in the previous plot [MeV]
+element = 'Ag'           
+color = 'palevioletred'          
 
 # NIST data
-data = np.loadtxt('gold.txt')
+data = np.loadtxt('silver.txt')
 x = data[:, 0]              # Kinetic energy [MeV]
 y = data[:, 1] / rho        # CSDA range divided into density [g/cm**2] / [g/cm**3] = [cm]
 
@@ -40,18 +40,18 @@ plt.ylim(np.min(y), np.max(y))
 
 plt.xlabel('E [MeV]')
 plt.ylabel('R/$\\rho$ [cm]')
-plt.title('Rango de las partículas $\\alpha$ en Au')
+plt.title('Rango de las partículas $\\alpha$ en Ag')
 
 
 plt.legend([
     plt.Line2D([], [], color='black'),
     plt.Line2D([], [], color=color, linestyle='--')
 ], [
-    r'$\alpha$ + Au',
+    r'$\alpha$ + Ag',
     f'E = {E:.2f} MeV, R = {R_microns:.2f} µm' 
 ], loc='best')
 
 plt.grid(True, which="both",color='lightgray', ls="-", alpha=0.5)
 plt.tight_layout()
-plt.savefig('gold.png', dpi=300)
+plt.savefig('silver.png', dpi=300)
 plt.show()
